@@ -1,0 +1,8 @@
+# Local database store containing personal habit data
+data.json
+
+# Windows temporary / shortcut locks
+*.lnk
+Thumbs.db
+Desktop.ini
+.DS_Store

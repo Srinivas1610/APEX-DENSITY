@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apex Planner - High-Density Personal Dashboard</title>
+  <!-- Google Fonts for JetBrains Mono & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="shortcut icon" href="shortcut icon" href="favicon.ico">
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header class="app-header">
+    <div class="header-left">
+      <h1 class="logo">APEX//<span class="cyan-text">DENSITY</span></h1>
+      <span class="tagline">HIGH-DENSITY SEMESTER MATRIX PLANNER</span>
+    </div>
+    
+    <div class="header-center">
+      <!-- Calendar Controls -->
+      <div class="calendar-controller">
+        <button id="prev-month-btn" class="ctrl-btn">&lt;</button>
+        <select id="month-select" class="theme-select"></select>
+        <select id="year-select" class="theme-select"></select>
+        <button id="next-month-btn" class="ctrl-btn">&gt;</button>
+        <button id="today-btn" class="action-btn-outline">TODAY</button>
+        <span id="today-shortcut-display" class="today-shortcut-display"></span>
+      </div>
+    </div>
+
+    <div class="header-right" style="align-items: center; gap: 15px;">
+      <div class="system-time">
+        <span class="label">SYSTEM DATE:</span>
+        <span id="current-date-display" class="value cyan-text">2026-07-13</span>
+      </div>
+      <div class="stat-badge">
+        <span class="label">MONTHLY COMPLETION:</span>
+        <span id="global-completion-display" class="value green-text">0.0%</span>
+      </div>
+      <button id="trash-btn" class="action-btn-outline" style="border-color: #ff3333; color: #ff3333; height: 28px; line-height: 26px; padding: 0 10px; font-size: 9px; letter-spacing: 0.5px;">🗑 TRASH (<span id="trash-count">0</span>)</button>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+
+    <!-- Top Dashboard Analytics Graph Panel -->
+    <section class="panel analytics-panel" id="analytics-section">
+      <div class="panel-header">
+        <div class="header-title-area">
+          <span class="icon">📊</span>
+          <h2>ANALYTICS ENGINE</h2>
+        </div>
+      </div>
+      <div class="panel-content analytics-content">
+        <div class="chart-wrapper">
+          <div class="chart-title">MIDSEM & ENDSEM STUDY PROGRESS (PER SUBJECT)</div>
+          <svg id="academic-chart" class="dashboard-chart"></svg>
+        </div>
+        <div class="chart-wrapper">
+          <div class="chart-title">DAILY HABIT COMPLETION RATE (CURRENT MONTH)</div>
+          <svg id="habits-chart" class="dashboard-chart"></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Month Strip Navigation Bar -->
+    <div class="month-strip-container" id="month-strip">
+      <!-- Dynamically populated: Jul 26, Aug 26, ... Dec 27 -->
+    </div>
+
+    <!-- Segment 1: HABIT MATRIX -->
+    <section class="panel habit-panel" id="habit-section">
+      <div class="panel-header">
+        <div class="header-title-area">
+          <span class="icon">▰</span>
+          <h2>HABIT MATRIX</h2>
+          <span class="badge" id="habit-count-badge">0 Active</span>
+        </div>
+        <div class="header-actions">
+          <button id="add-habit-btn" class="action-btn">+ ADD HABIT</button>
+        </div>
+      </div>
+
+      <div class="panel-content">
+        <div class="habit-scroll-container" id="habit-scroll-container">
+          <table class="habit-table" id="habit-table">
+            <thead>
+              <tr id="habit-header-row">
+                <!-- Dynamically generated headers will go here -->
+              </tr>
+            </thead>
+            <tbody id="habit-list-tbody">
+              <!-- Dynamically populated habits -->
+            </tbody>
+          </table>
+        </div>
+        <div id="no-habits-msg" class="empty-state-msg hidden">
+          No habits added yet. Click "+ Add Habit" to construct your habit matrix.
+        </div>
+      </div>
+    </section>
+
+    <!-- Mid-Section Grid for Academic Sheet & Backlog Matrix -->
+    <div class="mid-grid">
+
+      <!-- Segment 2: ACADEMIC SHEET -->
+      <section class="panel academic-panel" id="academic-section">
+        <div class="panel-header">
+          <div class="header-title-area">
+            <span class="icon">◈</span>
+            <h2>ACADEMIC SHEET (EXAM STUDY TRACKER)</h2>
+            <span class="badge" id="task-count-badge">0 Subjects</span>
+          </div>
+          <div class="header-actions">
+            <button id="add-task-btn" class="action-btn">+ ADD SUBJECT</button>
+          </div>
+        </div>
+        <div class="panel-content table-scroll-container">
+          <table class="data-table" id="academic-table">
+            <thead>
+              <tr>
+                <th style="width: 40%;">SUBJECT</th>
+                <th style="width: 22%;">MIDSEM STUDY</th>
+                <th style="width: 22%;">ENDSEM STUDY</th>
+                <th style="width: 11%;">STATUS</th>
+                <th style="width: 5%; text-align: center;">DEL</th>
+              </tr>
+            </thead>
+            <tbody id="academic-list-tbody">
+              <!-- Dynamically populated subjects -->
+            </tbody>
+          </table>
+          <div id="no-tasks-msg" class="empty-state-msg hidden">
+            No subjects logged. Click "+ Add Subject" to begin tracking.
+          </div>
+        </div>
+      </section>
+
+      <!-- Segment 3: PROJECT TRACKER -->
+      <section class="panel backlog-panel" id="backlog-section">
+        <div class="panel-header">
+          <div class="header-title-area">
+            <span class="icon">▱</span>
+            <h2>PROJECT TRACKER</h2>
+            <span class="badge" id="backlog-count-badge">0 Projects</span>
+          </div>
+          <div class="header-actions">
+            <button id="add-backlog-btn" class="action-btn">+ ADD PROJECT</button>
+          </div>
+        </div>
+        <div class="panel-content table-scroll-container">
+          <table class="data-table" id="backlog-table">
+            <thead>
+              <tr>
+                <th style="width: 35%;">PROJECT NAME</th>
+                <th style="width: 20%;">STACK / CATEGORY</th>
+                <th style="width: 20%;">STATUS</th>
+                <th style="width: 20%;">COMPLETION</th>
+                <th style="width: 5%; text-align: center;">DEL</th>
+              </tr>
+            </thead>
+            <tbody id="backlog-list-tbody">
+              <!-- Dynamically populated project items -->
+            </tbody>
+          </table>
+          <div id="no-backlog-msg" class="empty-state-msg hidden">
+            No projects logged. Click "+ Add Project" to build your project list.
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Bottom Widgets Grid -->
+    <footer class="bottom-widgets">
+      
+      <!-- Widget Left: ACADEMIC HUB -->
+      <section class="panel widget-panel academic-hub-widget" style="display: flex; flex-direction: column;">
+        <div class="panel-header">
+          <div class="header-title-area">
+            <span class="icon">🎓</span>
+            <h3>ACADEMIC HUB</h3>
+          </div>
+          <button id="edit-links-btn" class="action-btn-small">EDIT LINKS</button>
+        </div>
+        <div class="panel-content pad-content" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto; height: calc(100% - 35px);">
+          <!-- Links Grid -->
+          <div id="hub-links-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <!-- Dynamically populated links -->
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid #1a1a1a; margin: 4px 0;">
+          
+          <!-- Exam Countdown Section -->
+          <div class="exam-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <h4 style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 0.5px;">EXAMS COUNTDOWNS</h4>
+              <button id="edit-exams-btn" class="action-btn-small">SET DATES</button>
+            </div>
+            <div id="exam-dates-display" style="display: flex; flex-direction: column; gap: 4px; font-family: var(--font-mono); font-size: 11px;">
+              <!-- Dynamically populated countdowns -->
+            </div>
+          </div>
+          
+          <hr style="border: 0; border-top: 1px solid #1a1a1a; margin: 4px 0;">
+          
+          <!-- Timetable / Image Section -->
+          <div class="timetable-section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <h4 style="font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 0.5px;">TIMETABLES / IMAGES</h4>
+              <button id="upload-img-btn" class="action-btn-small">+ UPLOAD</button>
+              <input type="file" id="timetable-file-input" accept="image/*" style="display: none;">
+            </div>
+            <div id="timetable-images-container" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; min-height: 45px; align-items: center;">
+              <!-- Thumbnail list -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Widget Center: NOTEPAD (Multi-Tab) -->
+      <section class="panel widget-panel notepad-widget">
+        <div class="panel-header" style="flex-direction: column; align-items: stretch; gap: 6px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="header-title-area">
+              <span class="icon">✎</span>
+              <h3>NOTEPAD</h3>
+            </div>
+            <span class="save-indicator" id="notepad-save-indicator">AUTO-SAVED</span>
+          </div>
+          
+          <!-- Notepad Tabs Navigation Bar -->
+          <div class="notepad-tabs-row">
+            <div class="notepad-tabs-scroll" id="notepad-tabs-container">
+              <!-- Dynamic tabs loaded here -->
+            </div>
+            <button id="add-note-tab-btn" class="add-tab-btn" title="Create new note card">+</button>
+          </div>
+        </div>
+        <div class="panel-content pad-content text-pad">
+          <textarea id="notepad-textarea" placeholder="// Double click a tab to rename it. Type notes here..." spellcheck="false"></textarea>
+        </div>
+      </section>
+
+      <!-- Widget Right: TOP 10 SCOREBOARD -->
+      <section class="panel widget-panel scoreboard-widget">
+        <div class="panel-header">
+          <div class="header-title-area">
+            <span class="icon">★</span>
+            <h3>TOP 10 SCOREBOARD</h3>
+          </div>
+        </div>
+        <div class="panel-content pad-content scrollable-scoreboard" id="scoreboard-container">
+          <!-- Scoreboard entries populated dynamically -->
+        </div>
+      </section>
+
+    </footer>
+
+  </main>
+
+  <!-- Modal / Overlay for Scheduling Setup (Custom Days Selector) -->
+  <div class="modal-overlay hidden" id="schedule-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>SCHEDULE SELECTION</h3>
+        <button id="close-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">Configure target days for: <strong id="modal-habit-name" class="cyan-text">Habit Name</strong></p>
+        <div class="day-selector-grid">
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="1" class="day-select-input">
+            <span>Monday</span>
+          </label>
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="2" class="day-select-input">
+            <span>Tuesday</span>
+          </label>
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="3" class="day-select-input">
+            <span>Wednesday</span>
+          </label>
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="4" class="day-select-input">
+            <span>Thursday</span>
+          </label>
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="5" class="day-select-input">
+            <span>Friday</span>
+          </label>
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="6" class="day-select-input">
+            <span>Saturday</span>
+          </label>
+          <label class="day-checkbox-label">
+            <input type="checkbox" value="0" class="day-select-input">
+            <span>Sunday</span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="save-schedule-btn" class="action-btn">APPLY CONFIGURATION</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal / Overlay for Managing Hub Links -->
+  <div class="modal-overlay hidden" id="links-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>ACADEMIC HUB CONFIGURATION</h3>
+        <button id="close-links-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="links-edit-list" class="links-edit-list">
+          <!-- Dynamic editable links -->
+        </div>
+        <button id="add-link-item-btn" class="action-btn-outline" style="margin-top: 10px; width: 100%;">+ ADD BOOKMARK</button>
+      </div>
+      <div class="modal-footer">
+        <button id="save-links-btn" class="action-btn">SAVE HUB BOOKMARKS</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Recycle Bin / Trash Restore -->
+  <div class="modal-overlay hidden" id="trash-modal">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3>RECYCLE BIN / RESTORE</h3>
+        <button id="close-trash-modal-btn" class="close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-desc">Deleted items are preserved below. Click RESTORE to recover them with data intact.</div>
+        <div id="trash-list-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; font-family: var(--font-mono); font-size: 11px;">
+          <!-- Populated dynamically with trash -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fullscreen Image Viewer Modal -->
+  <div id="image-overlay-modal" class="modal-overlay hidden" style="background-color: rgba(0, 0, 0, 0.95); z-index: 1000;">
+    <div style="position: relative; max-width: 90%; max-height: 90%; display: flex; align-items: center; justify-content: center;">
+      <span id="close-image-view-modal" class="close-btn" style="position: fixed; top: 20px; right: 20px; font-size: 40px; color: #fff; z-index: 1010; cursor: pointer;">&times;</span>
+      <img id="fullscreen-image-view" src="" style="max-width: 100%; max-height: 90vh; object-fit: contain; border: 1px solid #222; box-shadow: 0 0 20px rgba(0,0,0,0.8);" alt="Full timetable view">
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
